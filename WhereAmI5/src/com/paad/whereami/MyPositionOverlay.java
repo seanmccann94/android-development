@@ -57,7 +57,7 @@ public class MyPositionOverlay extends Overlay {
 			RectF backRect = new RectF(point.x + 2 + mRadius, point.y - 3
 					* mRadius, point.x + 65, point.y + mRadius);
 
-			// Draw the marker
+			// Draw the marker on the screen
 			canvas.drawOval(oval, paint);
 			canvas.drawRoundRect(backRect, 5, 5, backPaint);
 			canvas.drawText("Here I Am", point.x + 2 * mRadius, point.y, paint);
