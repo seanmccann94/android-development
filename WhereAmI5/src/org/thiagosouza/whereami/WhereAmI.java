@@ -18,6 +18,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -32,11 +33,12 @@ public class WhereAmI extends MapActivity {
 
 	private static String TREASURE_PROXIMITY_ALERT = "org.thiagosouza.treasurealert";
 
-	
-	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
-	
 	MapController mapController;
 	MyPositionOverlay positionOverlay;
+
+	List<Overlay> mapOverlays;
+	Drawable drawable;
+	Overlay itemizedOverlay;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -77,6 +79,21 @@ public class WhereAmI extends MapActivity {
 				locationListener);
 
 		setProximityAlert();
+
+		mapOverlays = myMapView.getOverlays();
+
+		drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+		itemizedOverlay = new MyOverlay(drawable);
+
+		Double lng = -49.279444 * 1E6;
+		Double lat = -25.442595 * 1E6;
+
+		GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
+		OverlayItem overlayItem = new OverlayItem(point, "Teste", "Teste");
+
+		((MyOverlay) itemizedOverlay).addOverlay(overlayItem);
+		mapOverlays.add(itemizedOverlay);
+
 	}
 
 	private final LocationListener locationListener = new LocationListener() {
@@ -149,11 +166,11 @@ public class WhereAmI extends MapActivity {
 		myLocationText.setText("Your Current Position is:\n" + latLongString);
 
 		if (addressString.equalsIgnoreCase(lastLocation)) {
-			alert(this, "alerta", "repetido");
+			// alert(this, "alerta", "repetido");
 		} else {
 			Toast.makeText(WhereAmI.this, addressString, Toast.LENGTH_LONG)
 					.show();
-			alert(this, addressString, "repetido");
+			// alert(this, addressString, "repetido");
 		}
 
 		lastLocation = addressString;
@@ -167,12 +184,6 @@ public class WhereAmI extends MapActivity {
 		return false;
 	}
 
-
-	public void addOverlay(OverlayItem overlay) {
-	    mOverlays.add(overlay);
-	    //populate();
-	}
-	
 	/** Configure a proximity alert */
 	private void setProximityAlert() {
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -215,8 +226,9 @@ public class WhereAmI extends MapActivity {
 			 * else alert(context, "Lugar calmo", "Alerta");
 			 */
 
-			// Toast.makeText(WhereAmI.this, "Treasure: " + entering,
-			// Toast.LENGTH_LONG).show();
+			if(entering)	
+				Toast.makeText(WhereAmI.this, "Treasure: " + entering,
+						Toast.LENGTH_LONG).show();
 			// [ ... perform proximity alert actions ... ]
 		}
 	}
