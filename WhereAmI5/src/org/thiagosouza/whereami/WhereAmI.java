@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import org.thiagosouza.whereami.ProximityAlert.ProximityIntentReceiver;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
@@ -33,6 +36,7 @@ public class WhereAmI extends MapActivity {
 
 	private static String TREASURE_PROXIMITY_ALERT = "org.thiagosouza.treasurealert";
 
+	LocationManager locationManager = null;
 	MapController mapController;
 	MyPositionOverlay positionOverlay;
 
@@ -61,7 +65,7 @@ public class WhereAmI extends MapActivity {
 		List<Overlay> overlays = myMapView.getOverlays();
 		overlays.add(positionOverlay);
 
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
 		Criteria criteria = new Criteria();
 		criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -79,7 +83,7 @@ public class WhereAmI extends MapActivity {
 				locationListener);
 
 		setProximityAlert();
-		
+
 		mapOverlays = myMapView.getOverlays();
 
 		drawable = this.getResources().getDrawable(R.drawable.androidmarker);
@@ -176,8 +180,6 @@ public class WhereAmI extends MapActivity {
 
 		lastLocation = addressString;
 
-		// Toast.makeText(WhereAmI.this, addressString,
-		// Toast.LENGTH_LONG).show();
 	}
 
 	@Override
@@ -187,58 +189,17 @@ public class WhereAmI extends MapActivity {
 
 	/** Configure a proximity alert */
 	private void setProximityAlert() {
-		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-		// ultima coordenada
-		// double lng = -49.278220;
-		// double lat = -25.442130;
 
 		// coordenada n 10
-		double lng = -49.279444;
-		double lat = -25.442595;
-
-		// float radius = 20f; // meters
-		float radius = 100; // meters
-		long expiration = -1; // do not expire
-
-		Intent intent = new Intent(TREASURE_PROXIMITY_ALERT);
-
-		PendingIntent proximityIntent = PendingIntent.getBroadcast(
-				getApplicationContext(), -1, intent, 0);
-
-		locationManager.addProximityAlert(lat, lng, radius, expiration,
-				proximityIntent);
-
-		IntentFilter filter = new IntentFilter(TREASURE_PROXIMITY_ALERT);
-		registerReceiver(new ProximityIntentReceiver(), filter);
+		@SuppressWarnings("unused")
+		ProximityAlert proximityAlert = new ProximityAlert(-25.442595,
+				-49.279444, 100, getApplicationContext(), locationManager);
+		
 	}
 
-	/** Proximity Alert Broadcast Receiver */
-	public class ProximityIntentReceiver extends BroadcastReceiver {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			String key = LocationManager.KEY_PROXIMITY_ENTERING;
+	/*
+	 * public static LocationManager getLocationManager() { return
+	 * getLocationManager(); }
+	 */
 
-			Boolean entering = intent.getBooleanExtra(key, false);
-
-			/*
-			 * if (entering) alert(context, "Lugar perigoso", "Alerta");
-			 * 
-			 * else alert(context, "Lugar calmo", "Alerta");
-			 */
-
-			if (entering)
-				Toast.makeText(WhereAmI.this, "Treasure: " + entering,
-						Toast.LENGTH_LONG).show();
-			// [ ... perform proximity alert actions ... ]
-		}
-	}
-
-	public static void alert(Context context, String msg, String title) {
-
-		Dialog dialog = new AlertDialog.Builder(context).setIcon(0).setTitle(
-				title).setPositiveButton("OK", null).setMessage(msg).create();
-
-		dialog.show();
-	}
 }
