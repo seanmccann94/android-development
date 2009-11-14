@@ -16,7 +16,7 @@ public class MyOverlay extends ItemizedOverlay {
 		super(boundCenterBottom(defaultMarker));
 	}
 
-	@Override
+	//@Override
 	protected OverlayItem createItem(int i) {
 		// return null;
 		return mOverlays.get(i);
