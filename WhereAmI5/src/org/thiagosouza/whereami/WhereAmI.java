@@ -79,7 +79,7 @@ public class WhereAmI extends MapActivity {
 				locationListener);
 
 		setProximityAlert();
-
+		
 		mapOverlays = myMapView.getOverlays();
 
 		drawable = this.getResources().getDrawable(R.drawable.androidmarker);
@@ -89,7 +89,8 @@ public class WhereAmI extends MapActivity {
 		Double lat = -25.442595 * 1E6;
 
 		GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
-		OverlayItem overlayItem = new OverlayItem(point, "Teste", "Teste");
+		OverlayItem overlayItem = new OverlayItem(point, "Teste",
+				"Aqui tem um lugar perigoso");
 
 		((MyOverlay) itemizedOverlay).addOverlay(overlayItem);
 		mapOverlays.add(itemizedOverlay);
@@ -226,7 +227,7 @@ public class WhereAmI extends MapActivity {
 			 * else alert(context, "Lugar calmo", "Alerta");
 			 */
 
-			if(entering)	
+			if (entering)
 				Toast.makeText(WhereAmI.this, "Treasure: " + entering,
 						Toast.LENGTH_LONG).show();
 			// [ ... perform proximity alert actions ... ]
