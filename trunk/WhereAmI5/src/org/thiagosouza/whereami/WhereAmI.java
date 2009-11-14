@@ -1,26 +1,18 @@
 package org.thiagosouza.whereami;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Locale;
-
-import org.thiagosouza.whereami.ProximityAlert.ProximityIntentReceiver;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -34,15 +26,10 @@ import android.widget.Toast;
 
 public class WhereAmI extends MapActivity {
 
-	private static String TREASURE_PROXIMITY_ALERT = "org.thiagosouza.treasurealert";
-
 	LocationManager locationManager = null;
 	MapController mapController;
-	MyPositionOverlay positionOverlay;
 
-	List<Overlay> mapOverlays;
-	Drawable drawable;
-	Overlay itemizedOverlay;
+
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -59,11 +46,6 @@ public class WhereAmI extends MapActivity {
 		// Zoom in
 		// mapController.setZoom(18);
 		mapController.setZoom(16);
-
-		// Add the MyPositionOverlay
-		positionOverlay = new MyPositionOverlay();
-		List<Overlay> overlays = myMapView.getOverlays();
-		overlays.add(positionOverlay);
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -82,23 +64,8 @@ public class WhereAmI extends MapActivity {
 		locationManager.requestLocationUpdates(provider, 2000, 10,
 				locationListener);
 
+		// chama a funcao para configurar os alertas de proximidade
 		setProximityAlert();
-
-		mapOverlays = myMapView.getOverlays();
-
-		drawable = this.getResources().getDrawable(R.drawable.androidmarker);
-		itemizedOverlay = new MyOverlay(drawable);
-
-		Double lng = -49.279444 * 1E6;
-		Double lat = -25.442595 * 1E6;
-
-		GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
-		OverlayItem overlayItem = new OverlayItem(point, "Teste",
-				"Aqui tem um lugar perigoso");
-
-		((MyOverlay) itemizedOverlay).addOverlay(overlayItem);
-		mapOverlays.add(itemizedOverlay);
-
 	}
 
 	private final LocationListener locationListener = new LocationListener() {
@@ -127,10 +94,8 @@ public class WhereAmI extends MapActivity {
 		String lastLocation = "";
 
 		if (location != null) {
-			// Update my location marker
-			positionOverlay.setLocation(location);
 
-			// Update the map location.
+			// Atualiza o mapa com a localizacao atual
 			Double geoLat = location.getLatitude() * 1E6;
 			Double geoLng = location.getLongitude() * 1E6;
 			GeoPoint point = new GeoPoint(geoLat.intValue(), geoLng.intValue());
@@ -171,7 +136,7 @@ public class WhereAmI extends MapActivity {
 		myLocationText.setText("Your Current Position is:\n" + latLongString);
 
 		if (addressString.equalsIgnoreCase(lastLocation)) {
-			// alert(this, "alerta", "repetido");
+			alert(this, "alerta", "repetido");
 		} else {
 			Toast.makeText(WhereAmI.this, addressString, Toast.LENGTH_LONG)
 					.show();
@@ -179,27 +144,36 @@ public class WhereAmI extends MapActivity {
 		}
 
 		lastLocation = addressString;
-
 	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
+	
+	public static void alert(Context context, String msg, String title) {
+
+		Dialog dialog = new AlertDialog.Builder(context).setIcon(0).setTitle(
+				title).setPositiveButton("OK", null).setMessage(msg).create();
+
+		dialog.show();
+	}
+
 
 	/** Configure a proximity alert */
 	private void setProximityAlert() {
 
-		// coordenada n 10
-		@SuppressWarnings("unused")
-		ProximityAlert proximityAlert = new ProximityAlert(-25.442595,
-				-49.279444, 100, getApplicationContext(), locationManager);
+		ProximityAlert proximityAlertPonto1 = new ProximityAlert(-25.443195,
+				-49.280977, 100, "Alerta personalizado");
 		
-	}
+		ProximityAlert proximityAlertPonto10 = new ProximityAlert(-25.442595,
+				-49.279444, 100);
 
-	/*
-	 * public static LocationManager getLocationManager() { return
-	 * getLocationManager(); }
-	 */
+		
+		Setup.addProximityAlert(proximityAlertPonto1);
+		Setup.addProximityAlert(proximityAlertPonto10);
+		Setup setup = new Setup(getApplicationContext(), locationManager);
+
+	}
 
 }
