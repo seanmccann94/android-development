@@ -2,6 +2,7 @@ package org.thiagosouza;
 
 import java.io.IOException;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,7 +15,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -45,18 +45,6 @@ public class OndeEstou extends MapActivity {
 
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		/*
-		 * Criteria criteria = new Criteria();
-		 * criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		 * criteria.setAltitudeRequired(false);
-		 * criteria.setBearingRequired(false); criteria.setCostAllowed(true);
-		 * criteria.setPowerRequirement(Criteria.POWER_LOW); String provider =
-		 * locationManager.getBestProvider(criteria, true); String provider =
-		 * locationManager.getBestProvider(criteria, true);
-		 */
-
-		// Location location = locationManager.getLastKnownLocation(provider);
-
 		String provider = LocationManager.GPS_PROVIDER;
 
 		Location location = locationManager.getLastKnownLocation(provider);
@@ -68,10 +56,11 @@ public class OndeEstou extends MapActivity {
 		locationManager.requestLocationUpdates(provider, 2000, 10,
 				locationListener);
 
-		// chama a funcao para configurar os alertas de proximidade
+		// Chama a funcao para configurar os alertas de proximidade
 		setProximityAlert();
 	}
 
+	/** Interface LocationListener */
 	private final LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(Location location) {
 			updateWithNewLocation(location);
@@ -88,7 +77,7 @@ public class OndeEstou extends MapActivity {
 		}
 	};
 
-	/** Atualiza o mapa */
+	/** Atualiza o mapa com a nova localização */
 	private void updateWithNewLocation(Location location) {
 		TextView myLocationText = (TextView) findViewById(R.id.myLocationText);
 
@@ -97,16 +86,19 @@ public class OndeEstou extends MapActivity {
 
 		if (location != null) {
 
-			// Atualiza o mapa com a localizacao atual
+			// Define a localizacao atual
 			Double geoLat = location.getLatitude() * 1E6;
 			Double geoLng = location.getLongitude() * 1E6;
 			GeoPoint point = new GeoPoint(geoLat.intValue(), geoLng.intValue());
 
+			// Atualiza o mapa
 			mapController.animateTo(point);
 
-			double lat = location.getLatitude();
-			double lng = location.getLongitude();
-			latLongString = "Lat:" + lat + ", Long:" + lng;
+			// Formata as coordenadas
+			Double lat = location.getLatitude();
+			Double lng = location.getLongitude();
+			latLongString = "Lat:" + roundTwoDecimals(lat) + ", Long:"
+					+ roundTwoDecimals(lng);
 
 			Geocoder gc = new Geocoder(this, Locale.getDefault());
 			try {
@@ -163,6 +155,11 @@ public class OndeEstou extends MapActivity {
 		@SuppressWarnings("unused")
 		Setup setup = new Setup(getApplicationContext(), locationManager);
 
+	}
+
+	double roundTwoDecimals(double d) {
+		DecimalFormat twoDForm = new DecimalFormat("#.######");
+		return Double.valueOf(twoDForm.format(d));
 	}
 
 }
