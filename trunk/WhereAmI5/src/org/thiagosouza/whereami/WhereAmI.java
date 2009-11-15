@@ -172,6 +172,7 @@ public class WhereAmI extends MapActivity {
 		
 		Setup.addProximityAlert(proximityAlertPonto1);
 		Setup.addProximityAlert(proximityAlertPonto10);
+		
 		Setup setup = new Setup(getApplicationContext(), locationManager);
 
 	}
