@@ -2,7 +2,6 @@ package org.thiagosouza;
 
 import java.io.IOException;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,8 +10,6 @@ import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -27,6 +24,8 @@ public class OndeEstou extends MapActivity {
 
 	LocationManager locationManager = null;
 	MapController mapController;
+
+	TextView myLocationText;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -49,7 +48,7 @@ public class OndeEstou extends MapActivity {
 
 		Location location = locationManager.getLastKnownLocation(provider);
 
-		updateWithNewLocation(location);
+		updateMap(location);
 
 		System.out.println(location.toString());
 
@@ -63,11 +62,11 @@ public class OndeEstou extends MapActivity {
 	/** Interface LocationListener */
 	private final LocationListener locationListener = new LocationListener() {
 		public void onLocationChanged(Location location) {
-			updateWithNewLocation(location);
+			updateMap(location);
 		}
 
 		public void onProviderDisabled(String provider) {
-			updateWithNewLocation(null);
+			updateMap(null);
 		}
 
 		public void onProviderEnabled(String provider) {
@@ -78,8 +77,9 @@ public class OndeEstou extends MapActivity {
 	};
 
 	/** Atualiza o mapa com a nova localização */
-	private void updateWithNewLocation(Location location) {
-		TextView myLocationText = (TextView) findViewById(R.id.myLocationText);
+	private void updateMap(Location location) {
+
+		myLocationText = (TextView) findViewById(R.id.myLocationText);
 
 		String latLongString;
 		String addressString = "Endereço não encontrado";
@@ -97,9 +97,13 @@ public class OndeEstou extends MapActivity {
 			// Formata as coordenadas
 			Double lat = location.getLatitude();
 			Double lng = location.getLongitude();
-			latLongString = "Lat:" + roundTwoDecimals(lat) + ", Long:"
-					+ roundTwoDecimals(lng);
+			latLongString = "Lat:" + MF.roundTwoDecimals(lat) + ", Long:"
+					+ MF.roundTwoDecimals(lng);
 
+			// Mostra as coordenadas na parte de cima da tela
+			myLocationText.setText("Sua posição atual é:\n" + latLongString);
+
+			// Busca o endereco atraves do GeoCoder
 			Geocoder gc = new Geocoder(this, Locale.getDefault());
 			try {
 				List<Address> addresses = gc.getFromLocation(lat, lng, 1);
@@ -121,23 +125,8 @@ public class OndeEstou extends MapActivity {
 			latLongString = "Localização não encontrada";
 		}
 
-		myLocationText.setText("Sua posição atual é:\n" + latLongString);
-
+		// Mostra na tela o endereco obtido atraves do GeoCoder
 		Toast.makeText(OndeEstou.this, addressString, Toast.LENGTH_LONG).show();
-
-	}
-
-	@Override
-	protected boolean isRouteDisplayed() {
-		return false;
-	}
-
-	public static void alert(Context context, String msg, String title) {
-
-		Dialog dialog = new AlertDialog.Builder(context).setIcon(0).setTitle(
-				title).setPositiveButton("OK", null).setMessage(msg).create();
-
-		dialog.show();
 	}
 
 	/** Configura um alerta de aproximacao */
@@ -157,9 +146,9 @@ public class OndeEstou extends MapActivity {
 
 	}
 
-	double roundTwoDecimals(double d) {
-		DecimalFormat twoDForm = new DecimalFormat("#.######");
-		return Double.valueOf(twoDForm.format(d));
+	@Override
+	protected boolean isRouteDisplayed() {
+		return false;
 	}
 
 }
