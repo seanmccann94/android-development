@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 public class Setup {
 
-	private static String TREASURE_PROXIMITY_ALERT = "org.thiagosouza.treasurealert";
+	private static String TREASURE_PROXIMITY_ALERT = "org.thiagosouza.alertacommensagem";
 
 	static ArrayList<ProximityAlert> proximityAlerts = new ArrayList<ProximityAlert>();
 
