@@ -11,8 +11,4 @@
 		android:id="@+id/myMapView" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:enabled="true"
 		android:clickable="true" android:apiKey="0vVwwkcqB1Z_whY4IYxwrT3eEVaYN6I9llTD7sQ" />
-
-	<TextView android:id="@+id/myLocationText"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:text="@string/hello" />
 </LinearLayout>
