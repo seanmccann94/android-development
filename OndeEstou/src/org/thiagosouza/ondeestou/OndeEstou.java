@@ -1,4 +1,4 @@
-package org.thiagosouza;
+package org.thiagosouza.ondeestou;
 
 import java.io.IOException;
 
@@ -124,7 +124,7 @@ public class OndeEstou extends MapActivity {
 					+ F.roundSixDecimals(lng);
 
 			// Mostra as coordenadas na parte de cima da tela
-			myLocationText.setText("Sua posição atual é:\n" + latLongString);
+			myLocationText.setText("Onde estou:\n" + latLongString);
 
 			// Busca o endereco atraves do GeoCoder
 			Geocoder gc = new Geocoder(this, Locale.getDefault());

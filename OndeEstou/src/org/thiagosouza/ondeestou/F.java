@@ -1,4 +1,4 @@
-package org.thiagosouza;
+package org.thiagosouza.ondeestou;
 
 import java.text.DecimalFormat;
 
