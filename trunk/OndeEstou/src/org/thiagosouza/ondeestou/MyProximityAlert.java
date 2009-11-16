@@ -3,14 +3,14 @@ package org.thiagosouza.ondeestou;
 /**
  * Clase dos alertas de proximidade
  * */
-public class ProximityAlert {
+public class MyProximityAlert {
 
 	Double lat = 0.0;
 	Double lng = 0.0;
 	float radius = 0;
 	String msg = "";
 
-	ProximityAlert(Double lat, Double lng, float radius, String msg) {
+	MyProximityAlert(Double lat, Double lng, float radius, String msg) {
 
 		this.lat = lat;
 		this.lng = lng;
@@ -18,7 +18,7 @@ public class ProximityAlert {
 		this.msg = msg;
 	}
 
-	ProximityAlert(Double lat, Double lng, float radius) {
+	MyProximityAlert(Double lat, Double lng, float radius) {
 		this(lat, lng, radius, "");
 	}
 
