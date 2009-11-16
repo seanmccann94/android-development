@@ -1,18 +1,17 @@
 package org.thiagosouza;
 
 import java.util.ArrayList;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.widget.Toast;
 
+/**
+ * Clase de configuracao dos alertas de proximidade
+ * */
 public class Setup {
 
 	private static String TREASURE_PROXIMITY_ALERT = "org.thiagosouza.alertacommensagem";
@@ -27,7 +26,8 @@ public class Setup {
 		proximityAlerts.add(pa);
 	}
 
-	public Setup(Context context, LocationManager locationManager) {
+	public void setProximityAlert(Context context,
+			LocationManager locationManager) {
 
 		long expiration = -1; // n‹o espira
 
@@ -37,9 +37,10 @@ public class Setup {
 				intent, 0);
 
 		for (int i = 0; i < proximityAlerts.size(); i++) {
+			// para cada alerta de proximidade
 			ProximityAlert paTemp = proximityAlerts.get(i);
-			// chama o mŽtodo da classe Location para adicionar os dados dos
-			// alertas de aproxima‹o (passados por parametro)
+
+			// chama o mŽtodo da classe Location para adicionar os pontos
 			locationManager.addProximityAlert(paTemp.lat, paTemp.lng,
 					paTemp.radius, expiration, proximityIntent);
 		}
@@ -50,7 +51,7 @@ public class Setup {
 
 	}
 
-	/** Proximity Alert Broadcast Receiver */
+	/** Classe para receber os intents de proximidade */
 	public class ProximityIntentReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -63,13 +64,4 @@ public class Setup {
 						Toast.LENGTH_LONG).show();
 		}
 	}
-
-	public static void alert(Context context, String msg, String title) {
-
-		Dialog dialog = new AlertDialog.Builder(context).setIcon(0).setTitle(
-				title).setPositiveButton("OK", null).setMessage(msg).create();
-
-		dialog.show();
-	}
-
 }

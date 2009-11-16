@@ -9,6 +9,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 
 import android.content.Context;
 import android.location.Address;
@@ -26,37 +27,59 @@ public class OndeEstou extends MapActivity {
 	MapController mapController;
 
 	TextView myLocationText;
+	TextView myApplicationFooter;
 
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.main);
 
+		// Intanciacao da classe MapView (do mapa propriamente dito)
 		MapView myMapView = (MapView) findViewById(R.id.myMapView);
 		mapController = myMapView.getController();
 
 		// Configura opcoes de visualizacao do mapa
-		myMapView.setSatellite(true);
-		myMapView.setStreetView(true);
+		myMapView.setSatellite(false);
+		myMapView.setTraffic(true);
 
 		// Configura o zoom no mapa (21-1)
 		mapController.setZoom(16);
+		myMapView.setBuiltInZoomControls(true); // mostra o controle de zoom
+		myMapView.displayZoomControls(false);
 
+		// Obtem uma instancia do servico gerenciador de localizacao
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
+		// Define como provedor o GPS do aparelho
 		String provider = LocationManager.GPS_PROVIDER;
 
+		// Obtem a localizacao (imediatamente)
 		Location location = locationManager.getLastKnownLocation(provider);
 
+		// Mostra o mapa na tela
 		updateMap(location);
 
-		System.out.println(location.toString());
-
+		// Inscreve a atual activity para receber notificacoes de localizacao
+		// (periodicamente)
 		locationManager.requestLocationUpdates(provider, 2000, 10,
 				locationListener);
 
 		// Chama a funcao para configurar os alertas de proximidade
 		setProximityAlert();
+
+		// Cria um overlay mostrando a posicao do dispositivo
+		List<com.google.android.maps.Overlay> overlays = myMapView
+				.getOverlays();
+		MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this,
+				myMapView);
+		overlays.add(myLocationOverlay);
+
+		// Habilita atualizacoes do sensor
+		myLocationOverlay.enableCompass();
+
+		// Mostra o ponto azul na tela
+		myLocationOverlay.enableMyLocation();
+
 	}
 
 	/** Interface LocationListener */
@@ -92,13 +115,13 @@ public class OndeEstou extends MapActivity {
 			GeoPoint point = new GeoPoint(geoLat.intValue(), geoLng.intValue());
 
 			// Atualiza o mapa
-			mapController.animateTo(point);
+			mapController.setCenter(point);
 
 			// Formata as coordenadas
 			Double lat = location.getLatitude();
 			Double lng = location.getLongitude();
-			latLongString = "Lat:" + MF.roundTwoDecimals(lat) + ", Long:"
-					+ MF.roundTwoDecimals(lng);
+			latLongString = "Lat:" + F.roundSixDecimals(lat) + ", Long:"
+					+ F.roundSixDecimals(lng);
 
 			// Mostra as coordenadas na parte de cima da tela
 			myLocationText.setText("Sua posição atual é:\n" + latLongString);
@@ -129,24 +152,26 @@ public class OndeEstou extends MapActivity {
 		Toast.makeText(OndeEstou.this, addressString, Toast.LENGTH_LONG).show();
 	}
 
-	/** Configura um alerta de aproximacao */
+	/** Configura os alertas de aproximacao */
 	private void setProximityAlert() {
 
+		// Alerta no pronto 1
 		ProximityAlert proximityAlertPonto1 = new ProximityAlert(-25.443195,
 				-49.280977, 100, "Alerta personalizado");
 
+		// Alerta no pronto 10
 		ProximityAlert proximityAlertPonto10 = new ProximityAlert(-25.442595,
 				-49.279444, 100);
 
 		Setup.addProximityAlert(proximityAlertPonto1);
 		Setup.addProximityAlert(proximityAlertPonto10);
 
-		@SuppressWarnings("unused")
-		Setup setup = new Setup(getApplicationContext(), locationManager);
-
+		// Habilita os alertas
+		Setup setup = new Setup();
+		setup.setProximityAlert(getApplicationContext(), locationManager);
 	}
 
-	@Override
+	/** Implementacao do metodo abstrato da classe MapActivity */
 	protected boolean isRouteDisplayed() {
 		return false;
 	}
