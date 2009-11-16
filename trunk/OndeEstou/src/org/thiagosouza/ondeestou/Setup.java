@@ -1,4 +1,4 @@
-package org.thiagosouza;
+package org.thiagosouza.ondeestou;
 
 import java.util.ArrayList;
 import android.app.PendingIntent;

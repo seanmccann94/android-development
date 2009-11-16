@@ -1,4 +1,4 @@
-package org.thiagosouza;
+package org.thiagosouza.ondeestou;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
