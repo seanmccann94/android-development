@@ -17,7 +17,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+
 import android.os.Bundle;
+
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +27,7 @@ public class OndeEstou extends MapActivity {
 
 	LocationManager locationManager = null;
 	MapController mapController;
+	public static MapView myMapView;
 
 	TextView myLocationText;
 	TextView myApplicationFooter;
@@ -35,7 +38,7 @@ public class OndeEstou extends MapActivity {
 		setContentView(R.layout.main);
 
 		// Intanciacao da classe MapView (do mapa propriamente dito)
-		MapView myMapView = (MapView) findViewById(R.id.myMapView);
+		myMapView = (MapView) findViewById(R.id.myMapView);
 		mapController = myMapView.getController();
 
 		// Configura opcoes de visualizacao do mapa
@@ -75,7 +78,7 @@ public class OndeEstou extends MapActivity {
 
 		// Mostra o overlay com a localizacao atual do dispositivo
 		overlays.add(myLocationOverlay);
-		
+
 		// Habilita atualizacoes do sensor
 		myLocationOverlay.enableCompass();
 
@@ -158,12 +161,12 @@ public class OndeEstou extends MapActivity {
 	private void setProximityAlert() {
 
 		// Alerta no pronto 1
-		ProximityAlert proximityAlertPonto1 = new ProximityAlert(-25.443195,
-				-49.280977, 100, "Alerta personalizado");
+		MyProximityAlert proximityAlertPonto1 = new MyProximityAlert(
+				-25.443195, -49.280977, 100, "Alerta personalizado");
 
 		// Alerta no pronto 10
-		ProximityAlert proximityAlertPonto10 = new ProximityAlert(-25.442595,
-				-49.279444, 100);
+		MyProximityAlert proximityAlertPonto10 = new MyProximityAlert(
+				-25.442595, -49.279444, 100);
 
 		Setup.addProximityAlert(proximityAlertPonto1);
 		Setup.addProximityAlert(proximityAlertPonto10);
