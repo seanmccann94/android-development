@@ -72,12 +72,14 @@ public class OndeEstou extends MapActivity {
 				.getOverlays();
 		MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this,
 				myMapView);
-		overlays.add(myLocationOverlay);
 
+		// Mostra o overlay com a localizacao atual do dispositivo
+		overlays.add(myLocationOverlay);
+		
 		// Habilita atualizacoes do sensor
 		myLocationOverlay.enableCompass();
 
-		// Mostra o ponto azul na tela
+		// Habilita o ponto azul na tela
 		myLocationOverlay.enableMyLocation();
 
 	}
@@ -124,7 +126,7 @@ public class OndeEstou extends MapActivity {
 					+ F.roundSixDecimals(lng);
 
 			// Mostra as coordenadas na parte de cima da tela
-			myLocationText.setText("Onde estou:\n" + latLongString);
+			myLocationText.setText("Minhas coordenadas:\n" + latLongString);
 
 			// Busca o endereco atraves do GeoCoder
 			Geocoder gc = new Geocoder(this, Locale.getDefault());

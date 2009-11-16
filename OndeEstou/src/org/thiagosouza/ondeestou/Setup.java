@@ -40,6 +40,8 @@ public class Setup {
 			// para cada alerta de proximidade
 			ProximityAlert paTemp = proximityAlerts.get(i);
 
+
+			
 			// chama o método da classe Location para adicionar os pontos
 			locationManager.addProximityAlert(paTemp.lat, paTemp.lng,
 					paTemp.radius, expiration, proximityIntent);
